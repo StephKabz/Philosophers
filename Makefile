@@ -6,11 +6,11 @@
 #    By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/03 11:45:28 by kingstephan       #+#    #+#              #
-#    Updated: 2025/10/09 21:53:24 by kingstephan      ###   ########.fr        #
+#    Updated: 2025/10/10 00:23:58 by kingstephan      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
-NAME = philosopher
+NAME = philosophers
 CC = cc
 CFLAGS = -Wall -Wextra -Werror
 RM = rm -f
