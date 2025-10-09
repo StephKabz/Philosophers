@@ -1,17 +1,17 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosopher.h                                      :+:      :+:    :+:   */
+/*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/09 00:59:18 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:22:35 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHER
-# define PHILOSOPHER
+#ifndef PHILOSOPHERS
+# define PHILOSOPHERS
 
 # include <unistd.h>
 # include <string.h>

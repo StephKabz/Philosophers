@@ -6,11 +6,11 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 17:36:57 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/07 19:05:06 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:22:57 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philosophers.h"
 
 long	get_timestamp(void)
 {

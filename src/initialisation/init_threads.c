@@ -6,11 +6,11 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 19:59:58 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/09 00:48:09 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:22:53 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philosophers.h"
 
 int	create_and_init_thread(t_prog *prog, t_thread_data *data)
 {

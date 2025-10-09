@@ -6,11 +6,11 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:49:47 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/07 23:46:00 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:22:45 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philosophers.h"
 
 void	copie_args_and_init(t_prog *prog ,t_args *args)
 {

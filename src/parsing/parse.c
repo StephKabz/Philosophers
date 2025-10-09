@@ -6,11 +6,11 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 15:49:42 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/04 14:48:39 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:23:02 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philosophers.h"
 
 int	check_args_char(char *str)
 {

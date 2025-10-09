@@ -6,11 +6,11 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:59:43 by stkabang          #+#    #+#             */
-/*   Updated: 2025/10/07 22:48:32 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/10 00:23:06 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#include "philosopher.h"
+#include "philosophers.h"
 
 int	ft_atoi(const char *nptr)
 {
