@@ -6,12 +6,12 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/10 00:22:35 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/11 16:49:57 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
-#ifndef PHILOSOPHERS
-# define PHILOSOPHERS
+#ifndef PHILOSOPHERS_H
+# define PHILOSOPHERS_H
 
 # include <unistd.h>
 # include <string.h>
@@ -78,7 +78,7 @@ long	get_timestamp(void);
 long	time_diff(long start, long current);
 void	sleep_time(int milliseconde);
 
-// ---------- INIT_TIME.C ---------- //
+// ---------- INIT_THREADS.C ---------- //
 int		create_and_init_thread(t_prog *prog, t_thread_data *data);
 int		creates_philo_threads(t_prog *prog);
 void	*philosophes_routine(void *arg);
