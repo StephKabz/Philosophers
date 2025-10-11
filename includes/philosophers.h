@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/11 16:49:57 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/11 20:04:54 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -81,6 +81,7 @@ void	sleep_time(int milliseconde);
 // ---------- INIT_THREADS.C ---------- //
 int		create_and_init_thread(t_prog *prog, t_thread_data *data);
 int		creates_philo_threads(t_prog *prog);
+int		check_all_have_eaten(t_prog *prog);
 void	*philosophes_routine(void *arg);
 
 // ---------- UTILS0.C---------- //

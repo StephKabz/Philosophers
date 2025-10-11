@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 19:59:58 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/10 00:22:53 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/11 20:33:15 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -37,7 +37,6 @@ int	create_and_init_thread(t_prog *prog, t_thread_data *data)
 		}
 		i++;
 	}
-	free(data);
 	return (1);
 }
 
@@ -62,6 +61,24 @@ int	creates_philo_threads(t_prog *prog)
 	return (1);
 }
 
+int	check_all_have_eaten(t_prog *prog)
+{
+	int	i;
+
+	if (!prog)
+		return (0);
+	if (prog->must_eat_count <= 0)
+		return (0);
+	i = 0;
+	while (i < prog->nb_philo)
+	{
+		if (prog->philosophers[i].meal_count < prog->must_eat_count)
+			return (0);
+		i++;
+	}
+	return (1);
+}
+
 void	*philosophes_routine(void *arg)
 {
 	t_thread_data	*thread;
@@ -82,7 +99,7 @@ void	*philosophes_routine(void *arg)
 	first_fork = ft_min(left_fork, right_fork);
 	second_fork = ft_max(left_fork, right_fork);
 	my_philo = &new_prog->philosophers[philo_id];
-	my_philo->last_meal = &new_prog->start_time;
+	my_philo->last_meal = new_prog->start_time;
 	while (new_prog->simulation_running)
 	{
 		current_time = get_timestamp();
@@ -96,14 +113,30 @@ void	*philosophes_routine(void *arg)
 		printf("Philosopher %d is Thinking!\n", philo_id);
 		pthread_mutex_lock(&new_prog->forks[first_fork]);
 		printf("Philosopher %d has taken a fork!\n", philo_id);
-		pthread_mutex_lock(&new_prog->forks[second_fork]);
-		printf("Philosopher %d has taken a fork!\n", philo_id);
+		if (first_fork != second_fork)
+		{
+			pthread_mutex_lock(&new_prog->forks[second_fork]);
+			printf("Philosopher %d has taken a fork!\n", philo_id);
+		}
+		else
+		{
+			pthread_mutex_unlock(&new_prog->forks[first_fork]);
+			new_prog->simulation_running = 0;
+			my_philo->is_dead = 1;
+			printf("Philosopher %d is dead!\n", philo_id);
+			return (NULL);
+		}
 		printf("Philosopher %d is eating!\n", philo_id);
 		my_philo->last_meal = get_timestamp();
 		my_philo->meal_count++;
 		sleep_time(new_prog->time_to_eat);
 		pthread_mutex_unlock(&new_prog->forks[second_fork]);
 		pthread_mutex_unlock(&new_prog->forks[first_fork]);
+		if (check_all_have_eaten(new_prog))
+		{
+			new_prog->simulation_running = 0;
+			return (NULL);
+		}
 		printf("Philosopher %d is sleeping!\n", philo_id);
 		sleep_time(new_prog->time_to_sleep);
 	}
