@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 19:59:58 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/11 20:33:15 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/14 04:02:26 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ int	create_and_init_thread(t_prog *prog, t_thread_data *data)
 	return (1);
 }
 
-int	creates_philo_threads(t_prog *prog)
+int	creates_philo_threads(t_prog *prog, t_thread_data **data_ptr)
 {
 	t_thread_data	*data;
 
@@ -58,6 +58,7 @@ int	creates_philo_threads(t_prog *prog)
 		free(data);
 		return (0);
 	}
+	*data_ptr = data;
 	return (1);
 }
 
@@ -79,66 +80,56 @@ int	check_all_have_eaten(t_prog *prog)
 	return (1);
 }
 
-void	*philosophes_routine(void *arg)
+void	init_philo_routine(void *arg, t_philo_contexte *ctx)
 {
 	t_thread_data	*thread;
-	t_prog			*new_prog;
-	int				philo_id;
 	int				left_fork;
 	int				right_fork;
-	int				first_fork;
-	int				second_fork;
-	long			current_time;
-	t_philo			*my_philo;
 
+	if (!ctx)
+		return ;
 	thread = (t_thread_data *)arg;
-	new_prog = thread->prog;
-	philo_id = thread->philosopher_id;
-	left_fork = philo_id;
-	right_fork = (philo_id + 1) % new_prog->nb_philo;
-	first_fork = ft_min(left_fork, right_fork);
-	second_fork = ft_max(left_fork, right_fork);
-	my_philo = &new_prog->philosophers[philo_id];
-	my_philo->last_meal = new_prog->start_time;
-	while (new_prog->simulation_running)
+	ctx->prog = thread->prog;
+	ctx->philo_id = thread->philosopher_id;
+	left_fork = ctx->philo_id;
+	right_fork = (ctx->philo_id + 1) % ctx->prog->nb_philo;
+	ctx->first_fork = ft_min(left_fork, right_fork);
+	ctx->second_fork = ft_max(left_fork, right_fork);
+	ctx->my_philo = &ctx->prog->philosophers[ctx->philo_id];
+	ctx->my_philo->last_meal = ctx->prog->start_time;
+}
+
+void	philosophes_main_loop(t_philo_contexte *ctx)
+{
+	long	current_time;
+	int		fork_result;
+
+	while (ctx->prog->simulation_running)
 	{
 		current_time = get_timestamp();
-		if (current_time - my_philo->last_meal > new_prog->time_to_die)
+		if (check_death(ctx->prog, ctx->my_philo, ctx->philo_id, current_time))
+			return ;
+		safe_print(ctx->prog, "is thinking", ctx->philo_id);
+		fork_result = take_forks(ctx->prog, ctx->first_fork, ctx->second_fork, ctx->philo_id);
+		if (fork_result <= 0)
 		{
-			new_prog->simulation_running = 0;
-			my_philo->is_dead = 1;
-			printf("Philosopher %d is dead!\n", philo_id);
-			return (NULL);
+			if (fork_result == -1)
+				ctx->my_philo->is_dead = 1;
+			return ;
 		}
-		printf("Philosopher %d is Thinking!\n", philo_id);
-		pthread_mutex_lock(&new_prog->forks[first_fork]);
-		printf("Philosopher %d has taken a fork!\n", philo_id);
-		if (first_fork != second_fork)
-		{
-			pthread_mutex_lock(&new_prog->forks[second_fork]);
-			printf("Philosopher %d has taken a fork!\n", philo_id);
-		}
-		else
-		{
-			pthread_mutex_unlock(&new_prog->forks[first_fork]);
-			new_prog->simulation_running = 0;
-			my_philo->is_dead = 1;
-			printf("Philosopher %d is dead!\n", philo_id);
-			return (NULL);
-		}
-		printf("Philosopher %d is eating!\n", philo_id);
-		my_philo->last_meal = get_timestamp();
-		my_philo->meal_count++;
-		sleep_time(new_prog->time_to_eat);
-		pthread_mutex_unlock(&new_prog->forks[second_fork]);
-		pthread_mutex_unlock(&new_prog->forks[first_fork]);
-		if (check_all_have_eaten(new_prog))
-		{
-			new_prog->simulation_running = 0;
-			return (NULL);
-		}
-		printf("Philosopher %d is sleeping!\n", philo_id);
-		sleep_time(new_prog->time_to_sleep);
+		
+		if (philosopher_eat(ctx->prog, ctx->my_philo, ctx->philo_id))
+			return ;
+		philosopher_sleep(ctx->prog, ctx->philo_id);
 	}
+	return ;
+}
+
+void	*philosophes_routine(void *arg)
+{
+	t_philo_contexte ctx;
+
+	init_philo_routine(arg, &ctx);
+	philosophes_main_loop(&ctx);
 	return (NULL);
 }

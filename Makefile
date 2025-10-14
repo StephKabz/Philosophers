@@ -6,7 +6,7 @@
 #    By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/03 11:45:28 by kingstephan       #+#    #+#              #
-#    Updated: 2025/10/11 16:58:52 by kingstephan      ###   ########.fr        #
+#    Updated: 2025/10/14 04:03:32 by kingstephan      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -17,6 +17,7 @@ RM = rm -rf
 SRCS = src/initialisation/init_prog.c \
 		src/initialisation/init_threads.c \
 		src/initialisation/init_time.c \
+		src/initialisation/philo_action.c \
 		src/parsing/parse.c \
 		src/utils/utils.c \
 		src/main.c

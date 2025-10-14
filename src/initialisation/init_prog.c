@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/04 14:49:47 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/10 00:22:45 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/13 22:11:29 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -58,6 +58,11 @@ int	init_mutex(t_prog *prog)
 		}
 		i++;
 	}
+	if (pthread_mutex_init(&prog->print_mutex, NULL) != 0)
+		{
+			free_mutex(prog, prog->nb_philo);
+			return (-1);
+		}
 	return (0);
 }
 
@@ -71,6 +76,7 @@ void	free_mutex(t_prog *prog, int mutex_count)
 		pthread_mutex_destroy(&prog->forks[i]);
 		i++;
 	}
+	pthread_mutex_destroy(&prog->print_mutex);
 	free(prog->forks);
 	free(prog->philosophers);
 	free(prog);
