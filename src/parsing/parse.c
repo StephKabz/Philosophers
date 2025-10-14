@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 15:49:42 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/10 00:23:02 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/14 05:29:53 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -40,7 +40,7 @@ t_args	*create_args(int argc, char **argv)
 		return (NULL);
 	while (i < argc)
 	{
-		if (!check_args_char(argv[i]))
+		if (check_args_char(argv[i]) != 1)
 			return (NULL);
 		i++;
 	}
@@ -65,7 +65,7 @@ int	validate_args(t_args *args)
 	if (args->nb_philo <= 0 || args->time_to_die <= 0
 		|| args->time_to_eat <= 0 || args->time_to_sleep <= 0)
 		return (-1);
-	if (args->must_eat_count <= 0)
+	if (args->must_eat_count <= 0 && args->must_eat_count != -1)
 		return (-1);
 	return (1);
 }
