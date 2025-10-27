@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 01:48:08 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 13:40:21 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -82,16 +82,15 @@ int			create_philo_threads(t_program *prog);
 void		wait_for_threads(t_program *prog);
 int			start_simulation(t_program *prog);
 
-// ---------- PHILOSOPHERS.C ---------- //
+// ---------- ROUTINE.C ---------- //
 int			stop_for_meals(t_program *prog);
 void		*death_monitor_routine(void *arg);
 void		*philosopher_routine(void *arg);
 
-// ---------- PHILOSOPHERS_ACTIONS.C ---------- //
+// ---------- PHILO_ACTIONS.C ---------- //
 void		philosopher_think(t_program *prog, int id);
 int			philosopher_take_forks(t_program *prog, int id);
 void		philosopher_eat(t_program *prog, int id);
 void		philosopher_sleep_action(t_program *prog, int id);
-
 
 #endif

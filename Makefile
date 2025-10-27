@@ -6,7 +6,7 @@
 #    By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/03 11:45:28 by kingstephan       #+#    #+#              #
-#    Updated: 2025/10/27 00:39:21 by kingstephan      ###   ########.fr        #
+#    Updated: 2025/10/27 14:08:20 by kingstephan      ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -14,11 +14,11 @@ NAME = philo
 CC = cc
 CFLAGS = -Wall -Wextra -Werror -pthread -I includes
 RM = rm -rf
-SRCS = src/initialisation/simulation.c \
+SRCS = src/initialisation/routine.c \
 		src/initialisation/init.c \
-		src/initialisation/init_time.c \
-		src/initialisation/philo_actions.c \
-		src/initialisation/philosophers.c \
+		src/initialisation/time.c \
+		src/initialisation/actions.c \
+		src/initialisation/simulations.c \
 		src/parsing/parse.c \
 		src/utils/utils.c \
 		src/main.c

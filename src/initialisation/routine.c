@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philosophers.c                                     :+:      :+:    :+:   */
+/*   routine.c                                          :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/14 03:28:55 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 02:04:23 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 14:06:42 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -19,7 +19,6 @@ int	stop_for_meals(t_program *prog)
 
 	if (prog->must_eat_count <= 0)
 		return (0);
-	
 	pthread_mutex_lock(&prog->meal_lock);
 	total_meals = 0;
 	i = 0;
@@ -41,7 +40,7 @@ void	*death_monitor_routine(void *arg)
 	prog = (t_program *)arg;
 	while (is_simulation_running(prog))
 	{
-		usleep(10000);
+		usleep(1000);
 		current_time = get_timestamp();
 		pthread_mutex_lock(&prog->meal_lock);
 		i = 0;
@@ -51,12 +50,17 @@ void	*death_monitor_routine(void *arg)
 			{
 				pthread_mutex_unlock(&prog->meal_lock);
 				stop_simulation(prog);
-				safe_print(prog, i, "is dead");
+				safe_print(prog, i, "died");
 				return (NULL);
 			}
 			i++;
 		}
 		pthread_mutex_unlock(&prog->meal_lock);
+		if (stop_for_meals(prog))
+		{
+			stop_simulation(prog);
+			return (NULL);
+		}
 	}
 	return (NULL);
 }
@@ -70,18 +74,17 @@ void	*philosopher_routine(void *arg)
 	data = (t_philo_data *)arg;
 	philo_id = data->id;
 	prog = data->prog;
+	if (philo_id % 2 == 1)
+		usleep(1000);
 	while (is_simulation_running(prog))
 	{
-		if (stop_for_meals(prog))
-		{
-			stop_simulation(prog);
-			return (NULL);
-		}
 		philosopher_think(prog, philo_id);
-		if (philosopher_take_forks(prog, philo_id))
-			philosopher_eat(prog, philo_id);
+		
+		if (!philosopher_take_forks(prog, philo_id))
+			break;
+			
+		philosopher_eat(prog, philo_id);
 		philosopher_sleep_action(prog, philo_id);
 	}
 	return (NULL);
 }
-

@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   philo_actions.c                                    :+:      :+:    :+:   */
+/*   philo_actions_fixed.c                              :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/27 00:12:47 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 01:49:13 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 14:01:30 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -28,23 +28,48 @@ int	philosopher_take_forks(t_program *prog, int id)
 		return (0);
 	left_fork = id;
 	right_fork = (id + 1) % prog->nb_philo;
+	if (prog->nb_philo == 1)
+	{
+		pthread_mutex_lock(&prog->forks[left_fork]);
+		safe_print(prog, id, "has taken a fork");
+		pthread_mutex_unlock(&prog->forks[left_fork]);
+		return (0);
+	}
 	if (id == prog->nb_philo - 1)
 	{
 		pthread_mutex_lock(&prog->forks[right_fork]);
-		safe_print(prog, id, "has taken a fork");
-		if (prog->nb_philo == 1)
+		if (!is_simulation_running(prog))
 		{
 			pthread_mutex_unlock(&prog->forks[right_fork]);
 			return (0);
 		}
+		safe_print(prog, id, "has taken a fork");
+		
 		pthread_mutex_lock(&prog->forks[left_fork]);
+		if (!is_simulation_running(prog))
+		{
+			pthread_mutex_unlock(&prog->forks[left_fork]);
+			pthread_mutex_unlock(&prog->forks[right_fork]);
+			return (0);
+		}
 		safe_print(prog, id, "has taken a fork");
 	}
 	else
 	{
 		pthread_mutex_lock(&prog->forks[left_fork]);
+		if (!is_simulation_running(prog))
+		{
+			pthread_mutex_unlock(&prog->forks[left_fork]);
+			return (0);
+		}
 		safe_print(prog, id, "has taken a fork");
 		pthread_mutex_lock(&prog->forks[right_fork]);
+		if (!is_simulation_running(prog))
+		{
+			pthread_mutex_unlock(&prog->forks[right_fork]);
+			pthread_mutex_unlock(&prog->forks[left_fork]);
+			return (0);
+		}
 		safe_print(prog, id, "has taken a fork");
 	}
 	return (1);
@@ -60,6 +85,7 @@ void	philosopher_eat(t_program *prog, int id)
 	left_fork = id;
 	right_fork = (id + 1) % prog->nb_philo;
 	safe_print(prog, id, "is eating");
+	
 	pthread_mutex_lock(&prog->meal_lock);
 	prog->meal_counts[id]++;
 	prog->last_meals[id] = get_timestamp();
@@ -72,8 +98,8 @@ void	philosopher_eat(t_program *prog, int id)
 	}
 	else
 	{
-		pthread_mutex_unlock(&prog->forks[left_fork]);
 		pthread_mutex_unlock(&prog->forks[right_fork]);
+		pthread_mutex_unlock(&prog->forks[left_fork]);
 	}
 }
 

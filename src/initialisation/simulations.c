@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   simulation.c                                       :+:      :+:    :+:   */
+/*   simulations.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 19:59:58 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 00:45:52 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 14:04:40 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -56,6 +56,8 @@ int	create_philo_threads(t_program *prog)
 		}
 		i++;
 	}
+	usleep(100);
+	free(philo_data);
 	return (0);
 }
 
@@ -93,6 +95,7 @@ int	start_simulation(t_program *prog)
 	if (create_philo_threads(prog) != 0)
 	{
 		printf("Error : failed to create philosophers threads\n");
+		stop_simulation(prog);
 		pthread_join(prog->monitor, NULL);
 		return (1);
 	}
