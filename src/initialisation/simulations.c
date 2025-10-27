@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   simulations.c                                      :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
+/*   By: stkabang <stkabang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/07 19:59:58 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 14:04:40 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 15:25:57 by stkabang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -35,29 +35,23 @@ int	is_simulation_running(t_program *prog)
 
 int	create_philo_threads(t_program *prog)
 {
-	int				i;
-	t_philo_data	*philo_data;
+	int	i;
 
-	philo_data = malloc(sizeof(t_philo_data) * prog->nb_philo);
-	if (!philo_data)
-		return (1);
 	i = 0;
 	while (i < prog->nb_philo)
 	{
-		philo_data[i].id = i;
-		philo_data[i].prog = prog;
-		if (pthread_create(&prog->threads[i], NULL, philosopher_routine, &philo_data[i]) != 0)
+		prog->philo_data[i].id = i;
+		prog->philo_data[i].prog = prog;
+		if (pthread_create(&prog->threads[i], NULL, philosopher_routine,
+				&prog->philo_data[i]) != 0)
 		{
 			stop_simulation(prog);
 			while (--i >= 0)
 				pthread_join(prog->threads[i], NULL);
-			free(philo_data);
 			return (1);
 		}
 		i++;
 	}
-	usleep(100);
-	free(philo_data);
 	return (0);
 }
 

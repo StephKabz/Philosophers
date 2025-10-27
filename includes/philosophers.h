@@ -3,10 +3,10 @@
 /*                                                        :::      ::::::::   */
 /*   philosophers.h                                     :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
-/*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
+/*   By: stkabang <stkabang@student.42.fr>          +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/27 13:40:21 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 15:36:17 by stkabang         ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,32 +24,35 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-#define MAX_PHILO 200
+# define MAX_PHILO 200
+
+typedef struct s_program	t_program;
+
+typedef struct s_philo_data
+{
+	int			id;
+	t_program	*prog;
+}	t_philo_data;
 
 typedef struct s_program
 {
 	int				nb_philo;
 	int				time_to_die;
-	int				time_to_eat; 
+	int				time_to_eat;
 	int				time_to_sleep;
 	int				must_eat_count;
-    long long		start_time;
-    int             running;
-    pthread_t		threads[MAX_PHILO];
-    pthread_mutex_t	forks[MAX_PHILO];
-    int				meal_counts[MAX_PHILO];
-    long long		last_meals[MAX_PHILO];
-    pthread_t		monitor;
-    pthread_mutex_t	print_lock;
-    pthread_mutex_t	meal_lock;
-    pthread_mutex_t	stop_lock;
+	long long		start_time;
+	int				running;
+	pthread_t		threads[MAX_PHILO];
+	pthread_mutex_t	forks[MAX_PHILO];
+	int				meal_counts[MAX_PHILO];
+	long long		last_meals[MAX_PHILO];
+	pthread_t		monitor;
+	pthread_mutex_t	print_lock;
+	pthread_mutex_t	meal_lock;
+	pthread_mutex_t	stop_lock;
+	t_philo_data	philo_data[MAX_PHILO];
 }	t_program;
-
-typedef	struct s_philo_data
-{
-	int			id;
-	t_program	*prog;
-}	t_philo_data;
 
 // ---------- PARCE.C ---------- //
 int			validate_argv_string(char *str);
@@ -74,6 +77,8 @@ int			ft_atoi(const char *nptr);
 size_t		ft_strlen(const char *s);
 int			ft_isdigit(int c);
 void		safe_print(t_program *prog, int philo_id, char *action);
+int			take_one_fork(t_program *prog, int id, int fork_id);
+int			take_two_forks(t_program *prog, int id, int first, int second);
 
 // ---------- SIMULATION.C ---------- //
 void		stop_simulation(t_program *prog);
@@ -86,8 +91,10 @@ int			start_simulation(t_program *prog);
 int			stop_for_meals(t_program *prog);
 void		*death_monitor_routine(void *arg);
 void		*philosopher_routine(void *arg);
+int			check_philosopher_death(t_program *prog, int i, long long c_time);
+int			check_all_deaths(t_program *prog);
 
-// ---------- PHILO_ACTIONS.C ---------- //
+// ---------- ACTIONS.C ---------- //
 void		philosopher_think(t_program *prog, int id);
 int			philosopher_take_forks(t_program *prog, int id);
 void		philosopher_eat(t_program *prog, int id);

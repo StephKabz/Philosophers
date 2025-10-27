@@ -3,10 +3,10 @@
 #                                                         :::      ::::::::    #
 #    Makefile                                           :+:      :+:    :+:    #
 #                                                     +:+ +:+         +:+      #
-#    By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+         #
+#    By: stkabang <stkabang@student.42.fr>          +#+  +:+       +#+         #
 #                                                 +#+#+#+#+#+   +#+            #
 #    Created: 2025/07/03 11:45:28 by kingstephan       #+#    #+#              #
-#    Updated: 2025/10/27 14:08:20 by kingstephan      ###   ########.fr        #
+#    Updated: 2025/10/27 15:33:24 by stkabang         ###   ########.fr        #
 #                                                                              #
 # **************************************************************************** #
 
@@ -21,6 +21,7 @@ SRCS = src/initialisation/routine.c \
 		src/initialisation/simulations.c \
 		src/parsing/parse.c \
 		src/utils/utils.c \
+		src/utils/utils2.c \
 		src/main.c
 
 		
