@@ -6,66 +6,95 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/10/03 15:49:42 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/14 05:29:53 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 00:25:58 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
 #include "philosophers.h"
 
-int	check_args_char(char *str)
+int	validate_argv_string(char *str)
 {
 	int	i;
 
+	if (!str || ft_strlen(str) == 0)
+		return (0);
 	i = 0;
-	if (!str)
-		return (-1);
-	if (ft_strlen(str) == 0)
-		return (-1);
 	while (str[i])
 	{
-		if (!(ft_isdigit(str[i])))
-			return (-1);
+		if (!ft_isdigit(str[i]))
+			return (0);
 		i++;
 	}
 	return (1);
 }
 
-t_args	*create_args(int argc, char **argv)
+int	validate_argv_value(t_program *prog)
 {
-	t_args	*args;
-	int		i;
+	if (prog->nb_philo <= 0 || prog->nb_philo > MAX_PHILO)
+		return (0);
+	if (prog->time_to_die <= 0)
+		return (0);
+	if (prog->time_to_eat <= 0)
+		return (0);
+	if (prog->time_to_sleep <= 0)
+		return (0);
+	if (prog->must_eat_count < -1 || prog->must_eat_count == 0)
+		return (0);
+	return (1);
+}
 
+void	init_prog_value(t_program *prog)
+{
+	int	i;
+
+	prog->start_time = 0;
+	prog->running = 1;
+	i = 0;
+	while (i < MAX_PHILO)
+	{
+		prog->meal_counts[i] = 0;
+		prog->last_meals[i] = 0;
+		i++;
+	}
+}
+
+void	fill_program(t_program *prog, int argc, char **argv)
+{
+	prog->nb_philo = ft_atoi(argv[1]);
+	prog->time_to_die = ft_atoi(argv[2]);
+	prog->time_to_eat = ft_atoi(argv[3]);
+	prog->time_to_sleep = ft_atoi(argv[4]);
+	if (argc == 6)
+		prog->must_eat_count = ft_atoi(argv[5]);
+	else
+		prog->must_eat_count = -1;
+}
+
+int	parse_arguments(t_program *prog, int argc, char **argv)
+{
+	int	i;
+
+	if (argc < 5 || argc > 6)
+	{
+		printf("Error : Wrong number of arguments\n");
+		return (1);
+	}
 	i = 1;
-	if (!(argc >= 5 && argc <= 6))
-		return (NULL);
 	while (i < argc)
 	{
-		if (check_args_char(argv[i]) != 1)
-			return (NULL);
+		if (!validate_argv_string(argv[i]))
+		{
+			printf("Error : Invalid arguments\n");
+			return (1);
+		}
 		i++;
 	}
-	args = malloc(sizeof(t_args));
-	if (!args)
-		return (NULL);
-	args->nb_philo = ft_atoi(argv[1]);
-	args->time_to_die = ft_atoi(argv[2]);
-	args->time_to_eat = ft_atoi(argv[3]);
-	args->time_to_sleep = ft_atoi(argv[4]);
-	if (argc == 5)
-		args->must_eat_count = -1;
-	else
-		args->must_eat_count = ft_atoi(argv[5]);
-	return (args);
-}
-
-int	validate_args(t_args *args)
-{
-	if (!args)
-		return (-1);
-	if (args->nb_philo <= 0 || args->time_to_die <= 0
-		|| args->time_to_eat <= 0 || args->time_to_sleep <= 0)
-		return (-1);
-	if (args->must_eat_count <= 0 && args->must_eat_count != -1)
-		return (-1);
-	return (1);
+	fill_program(prog, argc, argv);
+	init_prog_value(prog);
+	if (!validate_argv_value(prog))
+	{
+		printf("Error : Invalid parameter value\n");
+		return (1);
+	}
+	return (0);
 }

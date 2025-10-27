@@ -6,7 +6,7 @@
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/07/17 21:11:30 by kingstephan       #+#    #+#             */
-/*   Updated: 2025/10/14 03:57:38 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/27 01:48:08 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -24,90 +24,74 @@
 # include <pthread.h>
 # include <sys/time.h>
 
-typedef struct s_philo
-{
-	int		position;
-	long	last_meal;
-	int		is_dead;
-	int		meal_count;
-}	t_philo;
+#define MAX_PHILO 200
 
-typedef struct s_args
-{
-	int	nb_philo;
-	int	time_to_die;
-	int	time_to_eat;
-	int	time_to_sleep;
-	int	must_eat_count;
-}	t_args;
-
-typedef struct s_prog
+typedef struct s_program
 {
 	int				nb_philo;
 	int				time_to_die;
-	int				time_to_eat;
+	int				time_to_eat; 
 	int				time_to_sleep;
 	int				must_eat_count;
-	long			start_time;
-	int				simulation_running;
-	t_philo			*philosophers;
-	pthread_mutex_t *forks;
-	pthread_mutex_t	print_mutex;
-	pthread_t		*threads;
-}	t_prog;
+    long long		start_time;
+    int             running;
+    pthread_t		threads[MAX_PHILO];
+    pthread_mutex_t	forks[MAX_PHILO];
+    int				meal_counts[MAX_PHILO];
+    long long		last_meals[MAX_PHILO];
+    pthread_t		monitor;
+    pthread_mutex_t	print_lock;
+    pthread_mutex_t	meal_lock;
+    pthread_mutex_t	stop_lock;
+}	t_program;
 
-typedef struct s_thread_data
+typedef	struct s_philo_data
 {
-	t_prog	*prog;
-	int		philosopher_id;
-}	t_thread_data;
+	int			id;
+	t_program	*prog;
+}	t_philo_data;
 
-typedef struct s_philo_contexte
-{
-	t_prog			*prog;
-	int				philo_id;
-	int				first_fork;
-	int				second_fork;
-	t_philo			*my_philo;;
-} t_philo_contexte;
+// ---------- PARCE.C ---------- //
+int			validate_argv_string(char *str);
+int			validate_argv_value(t_program *prog);
+void		init_prog_value(t_program *prog);
+void		fill_program(t_program *prog, int argc, char **argv);
+int			parse_arguments(t_program *prog, int argc, char **argv);
 
-// ---------- PARSE.C ---------- //
-int		check_args_char(char *str);
-t_args	*create_args(int argc, char **argv);
-int		validate_args(t_args *args);
-
-// ---------- INIT_PROG.C ---------- //
-void	copie_args_and_init(t_prog *prog ,t_args *args);
-void	init_philosophers(t_prog *prog);
-int		init_mutex(t_prog *prog);
-void	free_mutex(t_prog *prog, int mutex_count);
-t_prog	*init_program(t_args *args);
+// ---------- INIT.C ---------- //
+int			init_forks(t_program *prog);
+int			init_control_mutex(t_program *prog);
+void		init_philosopher_data(t_program *prog);
+int			init_program(t_program *prog);
+void		cleanup_program(t_program *prog);
 
 // ---------- INIT_TIME.C ---------- //
-long	get_timestamp(void);
-long	time_diff(long start, long current);
-void	sleep_time(int milliseconde);
+long long	get_timestamp(void);
+void		precise_sleep(t_program *prog, int millisecond);
 
-// ---------- INIT_THREADS.C ---------- //
-int		create_and_init_thread(t_prog *prog, t_thread_data *data);
-int		creates_philo_threads(t_prog *prog, t_thread_data **data_ptr);
-int		check_all_have_eaten(t_prog *prog);
-void	init_philo_routine(void *arg, t_philo_contexte *ctx);
-void	philosophes_main_loop(t_philo_contexte *ctx);
-void	*philosophes_routine(void *arg);
+// ---------- UTILS.C ---------- //
+int			ft_atoi(const char *nptr);
+size_t		ft_strlen(const char *s);
+int			ft_isdigit(int c);
+void		safe_print(t_program *prog, int philo_id, char *action);
 
-// ---------- PHILO_ACTION.C ---------- //
-int		check_death(t_prog *prog, t_philo *my_philo, int philo_id, long current_time);
-void	safe_print(t_prog *prog, char *action, int philo_id);
-int		take_forks(t_prog *prog, int first_fork, int second_fork, int philo_id);
-int		philosopher_eat(t_prog *prog, t_philo *my_philo, int philo_id);
-void	philosopher_sleep(t_prog *prog, int philo_id);
+// ---------- SIMULATION.C ---------- //
+void		stop_simulation(t_program *prog);
+int			is_simulation_running(t_program *prog);
+int			create_philo_threads(t_program *prog);
+void		wait_for_threads(t_program *prog);
+int			start_simulation(t_program *prog);
 
-// ---------- UTILS0.C---------- //
-int		ft_atoi(const char *nptr);
-size_t	ft_strlen(const char *s);
-int		ft_isdigit(int c);
-int		ft_min(int a, int b);
-int		ft_max(int a, int b);
+// ---------- PHILOSOPHERS.C ---------- //
+int			stop_for_meals(t_program *prog);
+void		*death_monitor_routine(void *arg);
+void		*philosopher_routine(void *arg);
+
+// ---------- PHILOSOPHERS_ACTIONS.C ---------- //
+void		philosopher_think(t_program *prog, int id);
+int			philosopher_take_forks(t_program *prog, int id);
+void		philosopher_eat(t_program *prog, int id);
+void		philosopher_sleep_action(t_program *prog, int id);
+
 
 #endif

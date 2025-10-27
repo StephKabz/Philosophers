@@ -1,12 +1,12 @@
 /* ************************************************************************** */
 /*                                                                            */
 /*                                                        :::      ::::::::   */
-/*   utils0.c                                           :+:      :+:    :+:   */
+/*   utils.c                                            :+:      :+:    :+:   */
 /*                                                    +:+ +:+         +:+     */
 /*   By: kingstephane <kingstephane@student.42.f    +#+  +:+       +#+        */
 /*                                                +#+#+#+#+#+   +#+           */
 /*   Created: 2025/04/09 13:59:43 by stkabang          #+#    #+#             */
-/*   Updated: 2025/10/10 00:23:06 by kingstephan      ###   ########.fr       */
+/*   Updated: 2025/10/26 22:34:16 by kingstephan      ###   ########.fr       */
 /*                                                                            */
 /* ************************************************************************** */
 
@@ -64,16 +64,11 @@ int	ft_isdigit(int c)
 	return (0);
 }
 
-int	ft_min(int a, int b)
+void	safe_print(t_program *prog, int philo_id, char *action)
 {
-	if (a < b)
-		return (a);
-	return (b);
-}
-
-int	ft_max(int a, int b)
-{
-	if (a > b)
-		return (a);
-	return (b);
+	if (!prog || !action)
+		return ;
+	pthread_mutex_lock(&prog->print_lock);
+	printf("%lld %d %s\n", get_timestamp() - prog->start_time, philo_id, action);
+	pthread_mutex_unlock(&prog->print_lock);
 }
